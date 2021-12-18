@@ -12,14 +12,14 @@
                 <div class="m-menu-item-icon i-overview"></div>
                 <div class="m-menu-item-text">Tổng quan</div>
             </div>
-            <div class="m-menu-item">
+            <router-link class="m-menu-item" to="/employee">
                 <div class="m-menu-item-icon i-cash"></div>
-                <div class="m-menu-item-text">Tiền mặt</div>
-            </div>
-            <div class="m-menu-item">
+                <div class="m-menu-item-text">Nhân viên</div>
+            </router-link>
+            <router-link class="m-menu-item" to="/customer">
                 <div class="m-menu-item-icon i-deposit"></div>
-                <div class="m-menu-item-text">Tiền gửi</div>
-            </div>
+                <div class="m-menu-item-text">Khách hàng</div>
+            </router-link>
             <div class="m-menu-item">
                 <div class="m-menu-item-icon i-purchas"></div>
                 <div class="m-menu-item-text">Mua hàng</div>

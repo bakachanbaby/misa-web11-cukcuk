@@ -1,7 +1,7 @@
 <template>
   <div class="m-popup">
     <div class="m-row">
-      <div id="dlgPopup" class="m-dialog-modal" style="display: none">
+      <div id="dlgPopup" class="m-dialog-modal" :class="{ isShow: isShow }">
         <div class="m-dialog">
           <!-- DIALOG HEADER -->
           <div class="m-dialog-header">
@@ -146,7 +146,6 @@
                     id=""
                     class="m-input"
                     fieldName="IdentityNumber"
-                    v-model="customer.PhoneNumber"
                   />
                 </div>
                 <div class="m-dialog-content-box">
@@ -215,6 +214,7 @@
                     id="m-employeePhone-txt"
                     class="m-input"
                     fieldName="PhoneNumber"
+                    v-model="customer.PhoneNumber"
                   />
                 </div>
                 <div class="m-dialog-content-box">
@@ -235,6 +235,7 @@
                     id="m-employeeEmail-txt"
                     class="m-input"
                     fieldName="Email"
+                    v-model="customer.Email"
                   />
                 </div>
               </div>
@@ -308,10 +309,31 @@ import axios from "axios";
 
 export default {
   name: "CustomerDetail",
+  props: {
+    bus:{
 
+    },
+    customerId: {
+      default: null,
+      type: String,
+    },
+    isShow: {
+      default: false,
+      type: Boolean,
+    },
+    CustomerCode: {
+      default: null,
+      type: String,
+    },
+  },
+  mounted() {
+    this.bus.$on('getNewCustomerCode', this.getNewCustomerCode);
+  },
   methods: {
     btnCancelOnClick: function () {
-      document.getElementById("dlgPopup").style.display = "none";
+      // this.customer = null;
+      // this.customerId = null;
+      this.$emit("ShowDialog", false);
     },
     dateChange: function () {
       var datePicked = event.target.value;
@@ -320,40 +342,63 @@ export default {
     btnSaveOnClick: function () {
       var me = this;
       // Build customer:
-      let inputs = document.querySelectorAll('#dlgPopup .m-dialog-content-box .m-input');
+      let inputs = document.querySelectorAll(
+        "#dlgPopup .m-dialog-content-box .m-input"
+      );
       // console.log(inputs);
       for (const input of inputs) {
-        let fieldName = input.getAttribute('fieldName');
+        let fieldName = input.getAttribute("fieldName");
         let value = input.value;
         me.customer[fieldName] = value;
       }
-      
+
       if (this.customerId == null) {
         axios
           .post("http://cukcuk.manhnv.net/api/v1/Customerss", me.customer)
           .then(function (res) {
             // me.customer = res.data;
             console.log(res);
-            document.getElementById("dlgPopup").style.display = "none";
+            this.$emit("ShowDialog", false);
           })
           .catch(function (res) {
             console.log(res);
-            document.getElementById("dlgPopup").style.display = "none";
+            this.$emit("ShowDialog", false);
           });
       } else {
         axios
-          .put(`http://cukcuk.manhnv.net/api/v1/Customerss/${me.customerId}`, me.customer)
+          .put(
+            `http://cukcuk.manhnv.net/api/v1/Customerss/${me.customerId}`,
+            me.customer
+          )
           .then(function () {
-            document.getElementById("dlgPopup").style.display = "none";
+            this.$emit("ShowDialog", false);
           })
           .catch(function (res) {
             console.log(res);
-            document.getElementById("dlgPopup").style.display = "none";
+            this.$emit("ShowDialog", false);
           });
       }
     },
+    getNewCustomerCode() {
+      this.customer = {};
+      var me = this;
+      axios 
+        .get(`http://cukcuk.manhnv.net/api/v1/Customerss/NewCustomerCode`)
+        .then(function (res) {
+          me.customer = {};
+          me.customer.CustomerCode = res.data;
+        })
+        .catch(function (res) {
+          console.log(res);
+        });
+    },
   },
   watch: {
+    // CustomerCode: function (val) {
+    //   var me = this;
+    //   me.customer = {};
+    //   me.customer.CustomerCode = val;
+    // },
     customerId: function (val) {
       console.log(val);
       var me = this;
@@ -367,6 +412,8 @@ export default {
           .catch(function (res) {
             console.log(res);
           });
+      } else {
+        alert("Lấy id mới cho khách hàng");
       }
     },
   },
@@ -388,10 +435,10 @@ export default {
     //   Reset lại giá trị id
     this.customerId = null;
   },
-  props: ["customerId"],
   data() {
     return {
-      customer: {},
+      // CustomerCode: null,
+      customer: { CustomerCode: null },
       //   customerId: null,
     };
   },

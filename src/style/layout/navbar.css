@@ -99,11 +99,7 @@
     background-color: #5D5D61;
 }
 
-.m-menu-item:active {
-    font-family: BAKA font Bold;
-    background-color: #e4e4e488;
-    border-left: 7px solid #2CA01C;
-}
+.m-menu-item:active {}
 
 .m-menu-item-icon {
     width: 20px !important;
@@ -175,4 +171,10 @@
 
 .m-menu-item-icon.i-financial-analysis {
     background: url('../../assets/img/Sprites.64af8f61.svg') no-repeat -251px -1667px;
+}
+
+.router-link-active {
+    font-family: BAKA font Bold;
+    background-color: #e4e4e488;
+    border-left: 7px solid #2CA01C;
 }
